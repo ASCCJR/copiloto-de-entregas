@@ -40,6 +40,30 @@ Abra **Perguntar** no painel. O modelo interpreta a pergunta e seleciona uma con
 - **Quais pedidos atrasaram mais de 7 dias?** Abre os pedidos com atraso de oito dias corridos ou mais.
 - **Qual mês do histórico teve mais atrasos?** Mantém a UF do painel e abre os atrasados do mês que teve o maior volume. Para comparar por percentual, peça a maior taxa.
 
+### Avaliação do chat
+
+O roteiro calcula o gabarito a partir das datas da base Olist em `data/deliveries.json`, sem usar as APIs de indicadores e pedidos. Nos casos com resultado, confere o texto da resposta, o recorte, o total e as três primeiras linhas da amostra. Nos casos sem recorte disponível, espera esclarecimento ou indicação do limite da base, sem pedidos.
+
+```sh
+uv run python scripts/evaluate_chat.py
+uv run python scripts/evaluate_chat.py --url https://portfolio-antonio-sergio.vercel.app
+```
+
+O primeiro comando só calcula o gabarito. Com `--url`, o segundo envia oito perguntas à API configurada e aguarda a janela do limite público entre dois grupos de quatro. Na rodada de 15/11/2026, a demo publicada passou nos oito casos.
+
+| Caso | Gabarito |
+| --- | --- |
+| Prazo com filtros do painel | 51 de 60 no Maranhão em agosto de 2018 |
+| UF, mês e data exata | 15 de 3.004 no dia prometido em São Paulo em maio de 2018 |
+| Mais de 7 dias de atraso | 4 pedidos com pelo menos 8 dias |
+| Ranking por volume no Rio de Janeiro | Abril de 2018: 344 atrasos em 1.062 entregas |
+| Ranking por taxa no Rio de Janeiro | Setembro de 2018: 12 atrasos em 12 entregas |
+| Filtros da tabela | 5 pedidos com atraso de pelo menos 5 dias |
+| Agosto sem ano e sem mês ativo | Pedir o ano |
+| Atraso por transportadora | Indicar as dimensões disponíveis na base |
+
+A rodada avalia o comportamento nesses casos. Ela usa perguntas fixas, uma passagem por pergunta e o snapshot de 96.470 entregas elegíveis.
+
 ## Publicação no Vercel
 
 A publicação usa a CLI a partir da raiz deste repositório. O projeto existente na Vercel chama-se `portfolio-antonio-sergio` e serve o Copiloto em `/copiloto`.
