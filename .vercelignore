@@ -1,0 +1,11 @@
+/*
+!/app
+!/lib
+!/data
+/data/*
+!/data/deliveries.json
+!/package.json
+!/pnpm-lock.yaml
+!/next.config.ts
+!/tsconfig.json
+!/vercel.json
