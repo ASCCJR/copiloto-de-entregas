@@ -1,11 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { portfolioUrl } from "../lib/portfolio";
 import {
   ArrowUpRight, CalendarDays, ChevronDown, ChevronLeft, ChevronRight,
-  CircleHelp, Clock3, LocateFixed, MessageCircle, PackageCheck, Truck,
+  CircleHelp, Clock3, LocateFixed, MessageCircle, PackageCheck,
 } from "lucide-react";
 import { dateLabel, decimals, describeDifference, integers, monthLabel, rateLabel, share, stateNames } from "../lib/presentation";
 import type { DataInfo, DeliveryStatus, Filters, OrderPage, OrderSort, OrderView, Summary } from "../lib/types";
@@ -147,14 +148,14 @@ export function Dashboard({
       <header className="topbar">
         <div className="shell topbar-inner">
           <Link className="brand" href="/copiloto" aria-label="Copiloto de Entregas, início do painel">
-            <span className="brand-mark"><Truck size={21} aria-hidden="true" /></span>
+            <Image className="brand-mark" src="/icon.svg" alt="" width={40} height={40} unoptimized />
             <span>Copiloto de Entregas</span>
           </Link>
           <div className="header-actions">
             <a className="source-link" href={dataInfo.source} target="_blank" rel="noreferrer" aria-label="Dados da Olist">
               <span>Dados da Olist</span> <ArrowUpRight size={15} aria-hidden="true" />
             </a>
-            <button type="button" className="chat-toggle" aria-expanded={chatOpen} aria-controls="copiloto-chat" onClick={() => setChatOpen(!chatOpen)}>
+            <button type="button" className="chat-toggle" aria-expanded={chatOpen} aria-controls="copiloto-chat" onClick={() => setChatOpen((open) => !open)}>
               <MessageCircle size={16} aria-hidden="true" /> Perguntar
             </button>
           </div>
@@ -163,11 +164,13 @@ export function Dashboard({
 
       <main className="shell">
         <section className="intro" aria-labelledby="dashboard-title">
-          <h1 id="dashboard-title">Pontualidade das entregas</h1>
-          <p>Compare as datas prometidas e realizadas em pedidos reais do e-commerce brasileiro.</p>
+          <div className="intro-copy">
+            <h1 id="dashboard-title">Pontualidade das entregas</h1>
+            <p>Compare o prazo prometido com a entrega real dos pedidos da Olist.</p>
+          </div>
         </section>
 
-        <div className="filters" aria-label="Filtros do painel">
+        <div className="filters" role="group" aria-label="Filtros do painel">
           <label>
             <span>Estado de destino</span>
             <span className="select-wrap">
@@ -192,9 +195,13 @@ export function Dashboard({
               <ChevronDown size={15} aria-hidden="true" />
             </span>
           </label>
-          <span className="historical-range">
-            {dateLabel(dataInfo.firstDelivery)} a {dateLabel(dataInfo.lastDelivery)}
-          </span>
+          <div className="historical-range">
+            <CalendarDays size={19} aria-hidden="true" />
+            <div>
+              <span>Histórico disponível</span>
+              <p><time dateTime={dataInfo.firstDelivery}>{dateLabel(dataInfo.firstDelivery)}</time> a <time dateTime={dataInfo.lastDelivery}>{dateLabel(dataInfo.lastDelivery)}</time></p>
+            </div>
+          </div>
         </div>
 
         {status === "error" && (
@@ -206,25 +213,24 @@ export function Dashboard({
         {status === "loading" && <span className="sr-only" role="status">Atualizando os dados do painel.</span>}
 
         <div className="results" aria-busy={status === "loading"} data-status={status} hidden={status === "error"}>
-          <section className="metrics" aria-label="Indicadores do recorte" aria-live="polite">
-            <article className="metric">
-              <span className="metric-icon"><PackageCheck size={20} aria-hidden="true" /></span>
-              <div>
-                <h2>Entregas analisadas</h2><strong>{integers.format(summary.delivered)}</strong>
+          <section aria-labelledby="summary-title">
+            <h2 id="summary-title" className="section-title">Resumo das entregas</h2>
+            <div className="metrics" aria-live="polite">
+              <article className="metric metric-total">
+                <h3><PackageCheck size={17} aria-hidden="true" /> Entregas analisadas</h3>
+                <strong>{integers.format(summary.delivered)}</strong>
                 {summary.delivered > 0 && <p>{rateLabel(share(summary.early + summary.onDate, summary.delivered))} até a data prometida</p>}
-              </div>
-            </article>
-            {deliveryStatuses.map(({ id, label }) => (
-              <article className={`metric metric-${id}`} key={id}>
-                <span className={`status-fill metric-dot ${id}`} aria-hidden="true" />
-                <div>
-                  <h2>{label}</h2><strong>{rateLabel(share(summary[id], summary.delivered))}</strong>
+              </article>
+              {deliveryStatuses.map(({ id, label }) => (
+                <article className={`metric metric-${id}`} key={id}>
+                  <h3><span className={`status-fill metric-dot ${id}`} aria-hidden="true" />{label}</h3>
+                  <strong>{rateLabel(share(summary[id], summary.delivered))}</strong>
                   <a href="#pedidos" onClick={() => showOrders(id)}>
                     {integers.format(summary[id])} {summary[id] === 1 ? "entrega" : "entregas"} <ArrowUpRight size={13} aria-hidden="true" />
                   </a>
-                </div>
-              </article>
-            ))}
+                </article>
+              ))}
+            </div>
           </section>
 
           <div className="analysis-grid">
@@ -232,7 +238,7 @@ export function Dashboard({
               <div className="card-heading">
                 <div>
                   <h2 id="chart-title">Pontualidade por mês de entrega</h2>
-                  <p>Selecione um mês no gráfico para ver os pedidos.</p>
+                  <p>Selecione uma coluna para filtrar os pedidos por mês.</p>
                 </div>
               </div>
               <div className="chart-legend">
