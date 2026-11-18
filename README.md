@@ -64,6 +64,34 @@ O primeiro comando só calcula o gabarito. Com `--url`, o segundo envia oito per
 
 A rodada avalia o comportamento nesses casos. Ela usa perguntas fixas, uma passagem por pergunta e o snapshot de 96.470 entregas elegíveis.
 
+## Extensão em Python com RAG
+
+A extensão recupera trechos do [glossário de entregas](docs/glossario-entregas.md) por similaridade de embeddings e consulta a API de indicadores do painel. O modelo recebe o resultado de uma ferramenta antes de escolher a ação seguinte. Uma regra local pede esclarecimento primeiro em formulações que mencionam o indicador de atraso sem indicar uma medida. A saída inclui as seções do glossário citadas, o recorte do indicador e a sequência das ferramentas executadas. Os valores numéricos vêm da API.
+
+Para rodar a extensão, inicie o painel conforme [Rodar localmente](#rodar-localmente). Em outro terminal, na raiz do projeto, use Python 3.10 ou superior. Configure `OPENAI_API_KEY` no ambiente ou em `.env.local`, conforme a seção [Chat do Copiloto](#chat-do-copiloto). A extensão usa a biblioteca padrão do Python.
+
+```sh
+python scripts/copiloto_rag.py "O que conta como atraso e quantas entregas atrasaram em Goiás em junho de 2018?"
+python scripts/evaluate_copiloto_rag.py --output avaliacao-local.json
+```
+
+Use `--url` para apontar para outro endereço local, como `http://127.0.0.1:3001`. No agente, `--uf` e `--mes` definem o recorte inicial. Para gravar outra rodada, informe um nome de arquivo de saída novo. Os comandos fazem chamadas à API da OpenAI.
+
+### Avaliação da extensão
+
+A avaliação confere as ferramentas chamadas, as fontes citadas e a resposta esperada. Nos casos numéricos, calcula o gabarito diretamente a partir das datas da base, de forma independente da API de indicadores. Um servidor local simula a resposta HTTP 503 no teste de indisponibilidade.
+
+| Caso | Resultado observado na rodada de 16/11/2026 |
+| --- | --- |
+| Definição de atraso | Recuperou e citou a seção correta do glossário. |
+| Período explícito | Usou julho de 2018 em Pernambuco, conforme a pergunta, e retornou taxa de 0,93%. |
+| Regra e número | Consultou o glossário e a API e retornou 8 atrasos em 107 entregas em Goiás, em junho de 2018. |
+| Medida ambígua | Perguntou se o usuário queria quantidade ou percentual de atrasos. |
+| Informação fora da base | Indicou que tipo de veículo fica fora das dimensões disponíveis. |
+| API indisponível | Informou a indisponibilidade após receber HTTP 503. |
+
+**Resultado da rodada: 6 de 6 casos aprovados.** O [registro da avaliação](docs/avaliacao-copiloto-rag.json) contém os gabaritos, as respostas completas e as duas rodadas de calibração.
+
 ## Publicação no Vercel
 
 A publicação usa a CLI a partir da raiz deste repositório. O projeto existente na Vercel chama-se `portfolio-antonio-sergio` e serve o Copiloto em `/copiloto`.

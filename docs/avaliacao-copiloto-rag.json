@@ -1,0 +1,343 @@
+{
+  "inicio_utc": "2026-11-16T23:15:16.000622+00:00",
+  "modelo_solicitado": "gpt-5.4-mini-2026-03-17",
+  "modelo_embeddings": "text-embedding-3-small",
+  "api_indicadores": "http://127.0.0.1:3137",
+  "entregas_elegiveis_na_base": 96470,
+  "sha256_base": "e7863120e691b965f936b592d8c314b5e579a86d4ec3c426945524d7b264fe25",
+  "aprovados": 6,
+  "casos": [
+    {
+      "caso": "definicao",
+      "pergunta": "O que conta como entrega atrasada segundo as regras do painel?",
+      "painel": {
+        "uf": "GO",
+        "mes": "2018-06"
+      },
+      "api_503_simulada": false,
+      "gabarito": {
+        "acao": "responder",
+        "ferramentas": [
+          "buscar_glossario"
+        ],
+        "fonte": "Entrega atrasada",
+        "texto_esperado": [
+          "depois|após|posterior",
+          "prometid[ao]|estimad[ao]|previst[ao]"
+        ],
+        "indicador": null
+      },
+      "resposta": {
+        "acao": "responder",
+        "mensagem": "Uma entrega é atrasada quando a data real ocorre depois da data prometida. O atraso é medido em dias corridos. Se o pedido chega no próprio dia prometido ou antes, a entrega está dentro do prazo.",
+        "indicador": null,
+        "fontes": [
+          {
+            "arquivo": "docs/glossario-entregas.md",
+            "secao": "Entrega atrasada",
+            "trecho": "Uma entrega é atrasada quando a data real ocorre depois da data prometida. O atraso é medido em dias corridos. Se o pedido chega no próprio dia prometido ou antes, a entrega está dentro do prazo."
+          }
+        ],
+        "passos": [
+          {
+            "ferramenta": "buscar_glossario",
+            "argumentos": {
+              "consulta": "entrega atrasada regra do painel definição"
+            },
+            "resultado": [
+              {
+                "secao": "Entrega atrasada",
+                "trecho": "Uma entrega é atrasada quando a data real ocorre depois da data prometida. O atraso é medido em dias corridos. Se o pedido chega no próprio dia prometido ou antes, a entrega está dentro do prazo."
+              },
+              {
+                "secao": "Taxa de atraso",
+                "trecho": "A taxa de atraso é o percentual de entregas atrasadas entre todas as entregas elegíveis no mesmo recorte. Divida os atrasos pelo total elegível e multiplique por 100. Se o recorte estiver vazio, a taxa fica indisponível."
+              }
+            ]
+          }
+        ],
+        "modelo": "gpt-5.4-mini-2026-03-17"
+      },
+      "erros": []
+    },
+    {
+      "caso": "recorte_explicito",
+      "pergunta": "Qual foi o percentual de entregas atrasadas em Pernambuco em julho de 2018?",
+      "painel": {
+        "uf": "PE",
+        "mes": "2018-06"
+      },
+      "api_503_simulada": false,
+      "gabarito": {
+        "acao": "responder",
+        "ferramentas": [
+          "consultar_indicadores"
+        ],
+        "fonte": null,
+        "texto_esperado": [],
+        "indicador": {
+          "medida": "percentual_atrasos",
+          "uf": "PE",
+          "mes": "2018-07",
+          "valor": 0.9345794392523364,
+          "entregas_elegiveis": 107
+        }
+      },
+      "resposta": {
+        "acao": "responder",
+        "mensagem": "Em Pernambuco, em julho de 2018, o percentual de entregas atrasadas foi de 0,93%.",
+        "indicador": {
+          "medida": "percentual_atrasos",
+          "rotulo": "Percentual de atrasos",
+          "valor": 0.9345794392523363,
+          "uf": "PE",
+          "mes": "2018-07",
+          "entregas_elegiveis": 107
+        },
+        "fontes": [],
+        "passos": [
+          {
+            "ferramenta": "consultar_indicadores",
+            "argumentos": {
+              "uf": "PE",
+              "mes": "2018-07"
+            },
+            "resultado": {
+              "uf": "PE",
+              "mes": "2018-07",
+              "total_entregas": 107,
+              "contagem_atrasos": 1,
+              "percentual_atrasos": 0.9345794392523363,
+              "entregas_no_prazo": 106
+            }
+          }
+        ],
+        "modelo": "gpt-5.4-mini-2026-03-17"
+      },
+      "erros": []
+    },
+    {
+      "caso": "regra_e_dados",
+      "pergunta": "O que conta como atraso e quantas entregas atrasaram em Goiás em junho de 2018?",
+      "painel": {
+        "uf": "GO",
+        "mes": "2018-06"
+      },
+      "api_503_simulada": false,
+      "gabarito": {
+        "acao": "responder",
+        "ferramentas": [
+          "buscar_glossario",
+          "consultar_indicadores"
+        ],
+        "fonte": "Entrega atrasada",
+        "texto_esperado": [
+          "depois|após|posterior",
+          "prometid[ao]|estimad[ao]|previst[ao]"
+        ],
+        "indicador": {
+          "medida": "contagem_atrasos",
+          "uf": "GO",
+          "mes": "2018-06",
+          "valor": 8,
+          "entregas_elegiveis": 107
+        }
+      },
+      "resposta": {
+        "acao": "responder",
+        "mensagem": "Uma entrega é atrasada quando a data real ocorre depois da data prometida; o atraso é medido em dias corridos. Se chega no próprio dia prometido ou antes, está no prazo. Em Goiás, em junho de 2018, atrasaram 8 entregas.",
+        "indicador": {
+          "medida": "contagem_atrasos",
+          "rotulo": "Quantidade de atrasos",
+          "valor": 8,
+          "uf": "GO",
+          "mes": "2018-06",
+          "entregas_elegiveis": 107
+        },
+        "fontes": [
+          {
+            "arquivo": "docs/glossario-entregas.md",
+            "secao": "Entrega atrasada",
+            "trecho": "Uma entrega é atrasada quando a data real ocorre depois da data prometida. O atraso é medido em dias corridos. Se o pedido chega no próprio dia prometido ou antes, a entrega está dentro do prazo."
+          },
+          {
+            "arquivo": "docs/glossario-entregas.md",
+            "secao": "Volume de atrasos",
+            "trecho": "O volume de atrasos é a contagem de entregas atrasadas dentro da UF e do período selecionados. O resultado é expresso em número de entregas."
+          }
+        ],
+        "passos": [
+          {
+            "ferramenta": "buscar_glossario",
+            "argumentos": {
+              "consulta": "O que conta como atraso"
+            },
+            "resultado": [
+              {
+                "secao": "Entrega atrasada",
+                "trecho": "Uma entrega é atrasada quando a data real ocorre depois da data prometida. O atraso é medido em dias corridos. Se o pedido chega no próprio dia prometido ou antes, a entrega está dentro do prazo."
+              },
+              {
+                "secao": "Volume de atrasos",
+                "trecho": "O volume de atrasos é a contagem de entregas atrasadas dentro da UF e do período selecionados. O resultado é expresso em número de entregas."
+              }
+            ]
+          },
+          {
+            "ferramenta": "consultar_indicadores",
+            "argumentos": {
+              "uf": "GO",
+              "mes": "2018-06"
+            },
+            "resultado": {
+              "uf": "GO",
+              "mes": "2018-06",
+              "total_entregas": 107,
+              "contagem_atrasos": 8,
+              "percentual_atrasos": 7.476635514018691,
+              "entregas_no_prazo": 99
+            }
+          }
+        ],
+        "modelo": "gpt-5.4-mini-2026-03-17"
+      },
+      "erros": []
+    },
+    {
+      "caso": "ambiguidade",
+      "pergunta": "Qual foi o indicador de atraso no recorte atual?",
+      "painel": {
+        "uf": "GO",
+        "mes": "2018-06"
+      },
+      "api_503_simulada": false,
+      "gabarito": {
+        "acao": "esclarecer",
+        "ferramentas": [],
+        "fonte": null,
+        "texto_esperado": [
+          "quantidade|contagem|número|volume|quantas",
+          "percentual|taxa|proporção",
+          "\\?"
+        ],
+        "indicador": null
+      },
+      "resposta": {
+        "acao": "esclarecer",
+        "mensagem": "Você quer a quantidade de entregas atrasadas ou o percentual de atrasos?",
+        "indicador": null,
+        "fontes": [],
+        "passos": [],
+        "modelo": null
+      },
+      "erros": []
+    },
+    {
+      "caso": "fora_da_base",
+      "pergunta": "Qual foi o percentual de atraso por tipo de veículo em Goiás em junho de 2018?",
+      "painel": {
+        "uf": "GO",
+        "mes": "2018-06"
+      },
+      "api_503_simulada": false,
+      "gabarito": {
+        "acao": "fora_da_base",
+        "ferramentas": [],
+        "fonte": null,
+        "texto_esperado": [
+          "veículo"
+        ],
+        "indicador": null
+      },
+      "resposta": {
+        "acao": "fora_da_base",
+        "mensagem": "A dimensão \"tipo de veículo\" não está disponível neste painel. Posso consultar apenas UF e mês para entregas, atrasos e prazo.",
+        "indicador": null,
+        "fontes": [],
+        "passos": [],
+        "modelo": "gpt-5.4-mini-2026-03-17"
+      },
+      "erros": []
+    },
+    {
+      "caso": "api_indisponivel",
+      "pergunta": "Quantas entregas atrasaram no Maranhão em agosto de 2018?",
+      "painel": {
+        "uf": "MA",
+        "mes": "2018-08"
+      },
+      "api_503_simulada": true,
+      "gabarito": {
+        "acao": "indisponivel",
+        "ferramentas": [
+          "consultar_indicadores"
+        ],
+        "fonte": null,
+        "texto_esperado": [
+          "indispon|falh|erro|não consegui"
+        ],
+        "indicador": null
+      },
+      "resposta": {
+        "acao": "indisponivel",
+        "mensagem": "Não consegui consultar os indicadores agora porque a API retornou erro HTTP 503. Tente novamente em instantes.",
+        "indicador": null,
+        "fontes": [],
+        "passos": [
+          {
+            "ferramenta": "consultar_indicadores",
+            "argumentos": {
+              "uf": "MA",
+              "mes": "2018-08"
+            },
+            "resultado": {
+              "erro": "API de indicadores: HTTP 503"
+            }
+          }
+        ],
+        "modelo": "gpt-5.4-mini-2026-03-17"
+      },
+      "erros": []
+    }
+  ],
+  "rodadas_de_calibracao": [
+    {
+      "inicio_utc": "2026-11-16T23:05:40.803925+00:00",
+      "aprovados": 4,
+      "falhas": [
+        {
+          "caso": "recorte_explicito",
+          "erros": [
+            "A resposta citou uma seção que não foi recuperada."
+          ]
+        },
+        {
+          "caso": "ambiguidade",
+          "erros": [
+            "sequência de ferramentas diferente do gabarito"
+          ]
+        }
+      ]
+    },
+    {
+      "inicio_utc": "2026-11-16T23:08:48.479004+00:00",
+      "aprovados": 5,
+      "falhas": [
+        {
+          "caso": "ambiguidade",
+          "erros": [
+            "ação diferente do gabarito",
+            "sequência de ferramentas diferente do gabarito",
+            "explicação ou esclarecimento divergente",
+            "valor retornado indevidamente"
+          ]
+        }
+      ]
+    }
+  ],
+  "sha256_arquivos": {
+    "scripts/copiloto_rag.py": "0bdceace5f8d2e89b5ad15c1a96f0bc2b9aceedaa5046993894a9faef520f8ce",
+    "scripts/evaluate_copiloto_rag.py": "bf348d0e18b9cebf2a245d860f02c2751e3bc937d33094e02ffd5872987375fd",
+    "docs/glossario-entregas.md": "110faf0db172e287f1dfddc9b592bc20ee48623272da1045c46f3e8c27ff7f93"
+  }
+}
